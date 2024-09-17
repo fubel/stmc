@@ -1,0 +1,83 @@
+# config.yaml
+hydra/hydra_logging: null
+
+defaults:
+  - dataset: CityFlow
+  - encoder: precomputed
+
+dataset_path: ./data/AICITY/
+output_path: ./outputs/
+
+device: cuda
+
+logging:
+  wandb:
+    enable: false
+    project: ggmc
+    upload_results: false
+    tags: null
+  tensorboard:
+    enable: false
+
+resources:
+  path: ./resources/
+  detector: YOLOX
+  reid: null
+
+visuals:
+  plot_interval: 1
+  plot_results: false
+  plot_ground_truth: false
+  plot_to_tensorboard: false
+  grid_rows: 2
+  store_files: true
+  border_size: 3
+
+solver:
+  backend: PD
+
+tracker:
+  matching:
+    distance_threshold: 0.02
+    rescale_threshold: 0.65
+    reid_decay: 1.0
+    rescale_weight: 0.5
+    distance_weight: 0.5
+  confidence_thresh: 0.7
+  low_confidence_thresh: null
+  patience: 1
+  memory: 15
+  fdim: 512
+  enable_accumulator: true
+  prematching:
+    enabled: true
+    iou_bias: 0.60
+    iou_threshold: 0.50
+    prune_remaining: false
+
+preprocess:
+  nms_thresh: null
+  roi_filter: true
+  bottom: true
+  box_projection_centers:
+    alpha_w: null
+    alpha_h: null
+
+postprocess:
+  expand_boxes:
+    enable: true
+    factor: 1.4
+  remove_borders:
+    enable: true
+    border_size: 5
+  size_filter:
+    enable: true
+    min_size: 6220
+    max_size: 622080
+
+evaluation:
+  inplace: true
+  evaluate_standard: true
+  evaluate_hota: false
+  evaluate_bev: false
+  evaluate_external: true

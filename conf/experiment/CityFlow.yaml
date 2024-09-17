@@ -1,0 +1,44 @@
+# @package _global_
+
+defaults:
+  - override /dataset: CityFlow
+  - override /encoder: precomputed
+
+dataset_path: ./data/AICITY/
+
+resources:
+  reid: LCFractal
+  detector: YOLOX
+
+tracker:
+  matching:
+    distance_threshold: 0.001
+    rescale_threshold: 0.7
+    reid_decay: 0.7
+    rescale_weight: 0.9
+  confidence_thresh: 0.70
+  low_confidence_thresh: null
+  patience: 0
+  memory: 160
+  fdim: 2048
+  prematching:
+    enabled: false
+    iou_bias: 0.50
+    iou_threshold: 0.70
+    prune_remaining: false
+
+preprocess:
+  nms_thresh: 0.7
+  roi_filter: true
+
+postprocess:
+  expand_boxes:
+    enable: true
+    factor: 1.4
+  remove_borders:
+    enable: true
+    border_size: 0
+  size_filter:
+    enable: true
+    min_size: 6000
+    max_size: 600000

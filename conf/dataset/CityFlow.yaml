@@ -1,0 +1,8 @@
+name: AICITY
+scene_path: ./validation/S02
+camera_pattern: c00*
+img_path: ./img1/
+img_ext: jpg
+offsets: [0, 0, 3, 8]
+calibration_path: calibration.json
+roi_path: "./data/AICITY/eval/ROIs/validation"
