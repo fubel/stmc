@@ -77,7 +77,7 @@ Our in-built evaluation follows the evaluation protocol of Synthehicle which dif
 
 We'd like to thank the authors of the following repositories for providing code used in our work:
 
-* We use the [RAMA](git+https://github.com/pawelswoboda/RAMA.git) solver which enables fast multi-cuts on the GPU.
+* We use the [RAMA](https://github.com/pawelswoboda/RAMA.git) solver which enables fast multi-cuts on the GPU.
 * The features for CityFlow are from [LCFractal](https://github.com/LCFractal/AIC21-MTMC).
 
 ## Citation
