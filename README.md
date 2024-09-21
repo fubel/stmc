@@ -1,7 +1,6 @@
 # Spatial-Temporal Multi-Cuts for Online Multiple-Camera Vehicle Tracking
 ![arXiv Badge](https://img.shields.io/badge/Paper-arXiv.0000.0000-b31b1b.svg)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
-[![CI](https://github.com/fubel/stmc/actions/workflows/main.yml/badge.svg)](https://github.com/fubel/stmc/actions/workflows/main.yml)
 
 ## Authors
 
@@ -40,20 +39,31 @@ The config files assume the datasets are stored in `./data/`. You can setup a sy
 * [CityFlow](https://www.aicitychallenge.org)
 * [Synthehicle](https://github.com/fubel/synthehicle)
 
+You need to provide the camera calibrations in `calibration.json` files. They are available in the releases.
+
 ## Running the Code
 
-For a multi-camera scene, adjust the config.yaml and run
+For a multi-camera scene, adjust the `config.yaml`. To track the Synthehicle scene `Town06-O-dawn`, run
 
 ```bash
 # for Synthehicle, Town06-O-dawn
 python main.py +experiment=Synthehicle dataset.scene_path=./test/Town06-O-dawn/
 ```
 
-❗️ We'll provide all pre-extracted detections and features for CityFlow soon.
+To track the CityFlow scene S02, run
+
+```bash
+# for Synthehicle, Town06-O-dawn
+python main.py +experiment=CityFlow
+```
+
+❗️ We'll provide all pre-extracted detections and features soon!
 
 ## Features and Detections
 
-Our resources are formatted in the MOT-Challenge format, with the addition that the last N columns of a resource file store the appearance feature vector of that object. They will be loaded automatically via hugging face.
+Our resources are formatted in the MOT-Challenge format, with the addition that the last N columns of a resource file store the appearance feature vector of that object. Detections and features are available in the releases.
+
+❗️ We'll provide all pre-extracted detections and features soon!
 
 ## Evaluation
 
