@@ -47,14 +47,14 @@ For a multi-camera scene, adjust the `config.yaml`. To track the Synthehicle sce
 
 ```bash
 # for Synthehicle, Town06-O-dawn
-python main.py +experiment=Synthehicle dataset.scene_path=./test/Town06-O-dawn/
+python -m tools.track +experiment=Synthehicle dataset.scene_path=./test/Town06-O-dawn/
 ```
 
 To track the CityFlow scene S02, run
 
 ```bash
 # for Synthehicle, Town06-O-dawn
-python main.py +experiment=CityFlow
+python -m tools.track +experiment=CityFlow
 ```
 
 ❗️ We'll provide all pre-extracted detections and features soon!
