@@ -1,0 +1,6 @@
+name: Synthehicle
+scene_path: ./test/Town06-O-dawn/
+camera_pattern: C0*
+img_path: ./out_rgb/
+gt_path: ./gt/gt.txt
+calibration_path: calibration.json

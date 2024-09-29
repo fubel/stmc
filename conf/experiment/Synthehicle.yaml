@@ -1,0 +1,55 @@
+# @package _global_
+
+defaults:
+  - override /dataset: Synthehicle
+  - override /encoder: precomputed
+
+dataset_path: ./data/Synthehicle/
+
+resources:
+  reid: LightMBN
+  detector: YOLOX
+
+tracker:
+  matching:
+    distance_threshold: 8
+    rescale_threshold: 0.8
+    reid_decay: 0.7
+    rescale_weight: 0.3
+    distance_weight: 0.7
+  confidence_thresh: 0.6
+  patience: 0
+  memory: 15
+  fdim: 3584
+  prematching:
+    enabled: true
+    iou_bias: 0.60
+    iou_threshold: 0.70
+    prune_remaining: true
+
+preprocess:
+  nms_thresh: 0.9
+  roi_filter: true
+  bottom: false
+  box_projection_centers:
+    alpha_w: 0.15
+    alpha_h: 0.85
+
+postprocess:
+  expand_boxes:
+    enable: false
+    factor: 1.4
+  remove_borders:
+    enable: false
+    border_size: 5
+  size_filter:
+    enable: false
+    min_size: 0
+    max_size: 0
+
+evaluation:
+  inplace: true
+  evaluate_standard: true
+  evaluate_hota: false
+  evaluate_bev: false
+  evaluate_external: false
