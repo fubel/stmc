@@ -22,6 +22,16 @@ class Tracker:
         feature_extractor: Optional[torch.nn.Module] = None,
         device: Optional[torch.device] = "cpu",
     ):
+        """
+        Initialize the Tracker.
+
+        Args:
+            solver_opts: Options for the solver.
+            cfg: Configuration dictionary.
+            n_cams: Number of cameras.
+            feature_extractor: Feature extractor module.
+            device: Device to run the tracker on.
+        """
         self.feature_extractor = feature_extractor
         self.solver_opts = solver_opts
         self.device = device
@@ -48,6 +58,15 @@ class Tracker:
         self.cumulative_execution_time = 0
 
     def step(self, sample):
+        """
+        Perform a single step of tracking.
+
+        Args:
+            sample: Input sample containing detections and features.
+
+        Returns:
+            tuple: A tuple containing current results and predicted results.
+        """
         # move sample to device and remove batch dimension
         t0 = time.time()
         for key in sample.keys():
@@ -74,6 +93,15 @@ class Tracker:
         return rresults, presults
 
     def update(self, sample):
+        """
+        Update the tracker with new detections and features.
+
+        Args:
+            sample: Input sample containing detections and features.
+
+        Returns:
+            tuple: A tuple containing matched and unmatched tracks.
+        """
         features = self.feature_extractor(sample)
         superboxes = self._new_superboxes_from_data(sample, features)
         superboxes = [s for s in superboxes if s.confidence >= self.cfg.confidence_thresh]
@@ -124,6 +152,12 @@ class Tracker:
         return matched_tracks, unmatched_tracks
 
     def _handle_unmatched(self, unmatched_tracks):
+        """
+        Handle unmatched tracks by updating their inactive status.
+
+        Args:
+            unmatched_tracks: List of unmatched tracks.
+        """
         for track in unmatched_tracks:
             for cam in range(self.n_cams):
                 if track.track_where[cam]:
@@ -138,7 +172,14 @@ class Tracker:
 
     def _new_superboxes_from_data(self, sample, sample_features):
         """
-        Given a sample and its features, create new superboxes.
+        Create new superboxes from detections and features.
+
+        Args:
+            sample: Input sample containing detection information.
+            sample_features: Extracted features from the sample.
+
+        Returns:
+            list: List of new SuperTrack objects.
         """
         n_rows = sample_features.shape[0]
 
@@ -169,6 +210,15 @@ class Tracker:
         return superboxes
 
     def _merge_tracks(self, tracks):
+        """
+        Merge multiple tracks into a single track.
+
+        Args:
+            tracks: List of tracks to merge.
+
+        Returns:
+            SuperTrack: Merged track.
+        """
         _frames = sorted({track.frame for track in tracks})
 
         newest_frame = _frames[-1]
@@ -212,8 +262,15 @@ class Tracker:
 
     def _match(self, tracks, labels, low_conf_indices=None):
         """
-        Match superboxes with superboxes, and merged
-        superboxes with existing supertracks in one cut.
+        Match superboxes with superboxes, and merged superboxes with existing supertracks.
+
+        Args:
+            tracks: List of tracks to match.
+            labels: Labels for each track.
+            low_conf_indices: Indices of low confidence detections.
+
+        Returns:
+            tuple: A tuple containing new tracks and unmatched tracks.
         """
         new_tracks = []
         unmatched_tracks = []
@@ -245,15 +302,16 @@ class Tracker:
 
     @staticmethod
     def _compute_similarities(features, positions, boxes):
-        """Compute similarity matrices for features, positions, and boxes.
+        """
+        Compute similarity matrices for features, positions, and boxes.
 
         Args:
-            features (torch.Tensor): (n_tracks, n_cams, feature_dim) tensor.
-            positions (torch.Tensor): (n_tracks, n_cams, 2) tensor.
-            boxes (torch.Tensor): (n_tracks, n_cams, 4) tensor.
+            features: Tensor of track features.
+            positions: Tensor of track positions.
+            boxes: Tensor of track bounding boxes.
 
         Returns:
-            Tuple[torch.Tensor]: Tuple of similarity matrices.
+            tuple: A tuple containing similarity matrices for features, positions, and IoU.
         """
         # permute to (n_cams, n_tracks, feature_dim), (n_cams, n_tracks, 2), (n_cams, n_tracks, 4)
         features = features.permute(1, 0, 2)
@@ -282,19 +340,20 @@ class Tracker:
         reid_decay: float = 1,
         penalty: float = -100,
     ) -> Tuple[torch.Tensor, torch.Tensor]:
-        """Builds a weighted graph from the given tracks and similarity matrices.
+        """
+        Build a weighted graph from tracks and similarity matrices.
 
         Args:
-            tracks (List[SuperTrack]): List of tracks.
-            similarities (Tuple[torch.Tensor, torch.Tensor, torch.Tensor]): Tuple of similarity matrices (appearance, position, IoU).
-            rescale_thresh (float): Threshold for rescaling weights.
-            dist_thresh (float): Distance threshold for feasibility.
-            iou_bias (float): Bias to add for IoU-based matching.
-            reid_decay (float, optional): Decay factor for ReID scores. Defaults to 1.
-            penalty (float, optional): Penalty for infeasible edges. Defaults to -100.
+            tracks: List of tracks.
+            similarities: Tuple of similarity matrices.
+            rescale_thresh: Threshold for rescaling weights.
+            dist_thresh: Distance threshold for feasibility.
+            iou_bias: Bias to add for IoU-based matching.
+            reid_decay: Decay factor for ReID scores.
+            penalty: Penalty for infeasible edges.
 
         Returns:
-            Tuple[torch.Tensor, torch.Tensor]: Edge indices and edge weights of the graph.
+            tuple: A tuple containing edge indices and edge weights of the graph.
         """
         adj = self._initialize_adjacency_matrix(similarities, tracks, reid_decay, rescale_thresh, dist_thresh)
 
@@ -313,6 +372,19 @@ class Tracker:
         rescale_thresh: float,
         dist_thresh: float,
     ) -> torch.Tensor:
+        """
+        Initialize the adjacency matrix for the graph.
+
+        Args:
+            similarities: Tuple of similarity matrices.
+            tracks: List of tracks.
+            reid_decay: Decay factor for ReID scores.
+            rescale_thresh: Threshold for rescaling weights.
+            dist_thresh: Distance threshold for feasibility.
+
+        Returns:
+            torch.Tensor: Initialized adjacency matrix.
+        """
         appearance_sim, position_dist, _ = similarities
         device = appearance_sim.device
 
@@ -342,6 +414,17 @@ class Tracker:
         return adj
 
     def _apply_prematching(self, adj: torch.Tensor, tracks: List[SuperTrack], iou_bias: float) -> torch.Tensor:
+        """
+        Apply prematching to the adjacency matrix.
+
+        Args:
+            adj: Adjacency matrix.
+            tracks: List of tracks.
+            iou_bias: Bias to add for IoU-based matching.
+
+        Returns:
+            torch.Tensor: Updated adjacency matrix after prematching.
+        """
         cur_frame = max(track.frame for track in tracks)
         pen_frame = cur_frame - 1
         cur_track_idx_by_cam = [[] for _ in range(self.n_cams)]
@@ -380,6 +463,17 @@ class Tracker:
         return adj
 
     def _finalize_adjacency_matrix(self, adj: torch.Tensor, penalty: float, tracks: List[SuperTrack]) -> torch.Tensor:
+        """
+        Finalize the adjacency matrix by applying penalties.
+
+        Args:
+            adj: Adjacency matrix.
+            penalty: Penalty value for infeasible edges.
+            tracks: List of tracks.
+
+        Returns:
+            torch.Tensor: Finalized adjacency matrix.
+        """
         frame_support_pairs = [(track.frame, track.track_where) for track in tracks]
         frames, supports = zip(*frame_support_pairs)
 
@@ -395,11 +489,23 @@ class Tracker:
         return adj
 
     def _get_edge_index_and_weights(self, adj: torch.Tensor) -> Tuple[torch.Tensor, torch.Tensor]:
+        """
+        Extract edge indices and weights from the adjacency matrix.
+
+        Args:
+            adj: Adjacency matrix.
+
+        Returns:
+            tuple: A tuple containing edge indices and edge weights.
+        """
         edge_index = torch.nonzero(adj).t().long()
         edge_weights = adj[edge_index[0], edge_index[1]]
         return edge_index, edge_weights
 
     def _sanitize(self):
+        """
+        Sanitize the tracker by updating track states and removing killed tracks.
+        """
         keep = []
         for k, track in enumerate(self.tracks):
             if track.state is TrackState.CREATED:
@@ -430,11 +536,24 @@ class Tracker:
         self.stats["FPS"] = int(1 / latency) if latency > 0 else 0
 
     def _get_active_tracks(self):
+        """
+        Get a list of active tracks.
+
+        Returns:
+            list: List of active tracks.
+        """
         return [track for track in self.tracks if track.state != TrackState.KILLED]
 
     def get_result(self, normalization=None, scale=1.0):
         """
-        Return the current online state of the tracker.
+        Get the current online state of the tracker.
+
+        Args:
+            normalization: Optional normalization parameters.
+            scale: Scale factor for the results.
+
+        Returns:
+            torch.Tensor: Tensor containing the current tracker state.
         """
         to_stack = [track.to_tensor() for track in self.tracks if track.state == TrackState.ACTIVE]
         if len(to_stack) > 0:
@@ -451,6 +570,15 @@ class Tracker:
         return result
 
     def _get_index_by_id(self, tid):
+        """
+        Get the index of a track by its ID.
+
+        Args:
+            tid: Track ID to search for.
+
+        Returns:
+            int: Index of the track with the given ID, or None if not found.
+        """
         for i, track in enumerate(self.tracks):
             if track.label == tid:
                 return i
@@ -458,6 +586,20 @@ class Tracker:
 
 
 def create_tracker(cfg, solver_cfg, feature_extractor, n_cams, device, writer=None):
+    """
+    Create a new Tracker instance.
+
+    Args:
+        cfg: Configuration dictionary.
+        solver_cfg: Solver configuration.
+        feature_extractor: Feature extractor module.
+        n_cams: Number of cameras.
+        device: Device to run the tracker on.
+        writer: Optional writer for logging.
+
+    Returns:
+        Tracker: A new Tracker instance.
+    """
     return Tracker(
         solver_opts=solver_cfg,
         cfg=cfg,
