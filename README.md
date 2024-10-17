@@ -1,5 +1,5 @@
 # Spatial-Temporal Multi-Cuts for Online Multiple-Camera Vehicle Tracking
-![[arXiv Badge](https://img.shields.io/badge/Paper-arXiv.2410.02638-b31b1b.svg)](https://arxiv.org/abs/2410.02638)
+[![arXiv Badge](https://img.shields.io/badge/Paper-arXiv.2410.02638-b31b1b.svg)](https://arxiv.org/abs/2410.02638)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 ## Authors
