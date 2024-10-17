@@ -1,5 +1,5 @@
 # Spatial-Temporal Multi-Cuts for Online Multiple-Camera Vehicle Tracking
-![arXiv Badge](https://img.shields.io/badge/Paper-arXiv.0000.0000-b31b1b.svg)
+![[arXiv Badge](https://img.shields.io/badge/Paper-arXiv.2410.02638-b31b1b.svg)](https://arxiv.org/abs/2410.02638)
 [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
 ## Authors
@@ -81,3 +81,12 @@ We'd like to thank the authors of the following repositories for providing code 
 * The features for CityFlow are from [LCFractal](https://github.com/LCFractal/AIC21-MTMC).
 
 ## Citation
+
+```
+@article{herzog2024spatial,
+  title={{Spatial-Temporal Multi-Cuts for Online Multiple-Camera Vehicle Tracking}},
+  author={Herzog, Fabian and Gilg, Johannes and Wolters, Philipp and Teepe, Torben and Rigoll, Gerhard},
+  journal={arXiv preprint arXiv:2410.02638},
+  year={2024}
+}
+```
