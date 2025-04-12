@@ -90,3 +90,7 @@ We'd like to thank the authors of the following repositories for providing code 
   year={2024}
 }
 ```
+
+## License
+
+The original code in this repository is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. This project relies on various third-party libraries and dependencies, each with their own licensing terms. These dependencies may not be included in the MIT License that covers my original code. Users of this project must ensure they comply with all licenses of the required dependencies for their specific use case. Some dependencies may have more restrictive terms than the MIT License.
